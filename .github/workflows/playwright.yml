@@ -1,0 +1,27 @@
+name: D365 smoke tests
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 11 * * 1-5'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test
+        env:
+          D365_URL: ${{ secrets.D365_URL }}
+          D365_APP_ID: ${{ secrets.D365_APP_ID }}
+          D365_STORAGE_STATE: ${{ secrets.D365_STORAGE_STATE }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
