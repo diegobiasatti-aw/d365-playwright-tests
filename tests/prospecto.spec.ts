@@ -2,9 +2,11 @@ import { test, expect, Page } from '@playwright/test';
 
 test.use({ viewport: { width: 1600, height: 1000 } });
 
-async function pickFirstLookup(page: Page, input: ReturnType<Page['locator']>) {
+async function pickFirstLookup(page: Page, input: ReturnType<Page['locator']>, search?: string) {
+  await input.scrollIntoViewIfNeeded();
   await input.click();
-  await input.press('Enter');
+  if (search) await input.pressSequentially(search, { delay: 100 });
+  else await input.press('Enter');
   const first = page.locator('[role="listbox"] [role="option"], [role="option"], [data-id*="lookup-results"] li, [id*="LookupResultsDropdown"] li').first();
   await first.waitFor({ state: 'visible', timeout: 15_000 }).catch(() => {});
   if (await first.isVisible()) await first.click();
@@ -23,7 +25,8 @@ async function pickOption(page: Page, name: RegExp, optionText?: string) {
 
 test('alta de prospecto con campos obligatorios', async ({ page }) => {
   const stamp = Date.now().toString();
-  const doc = stamp.slice(-8);
+  const doc = process.env.D365_TEST_DNI;
+  if (!doc) throw new Error('Definí D365_TEST_DNI en .env con un DNI de prueba válido');
 
   await page.goto(`/main.aspx?appid=${process.env.D365_APP_ID}&pagetype=entityrecord&etn=lead`);
   await page.getByText('Estado del Prospecto', { exact: true }).first().waitFor({ timeout: 60_000 });
@@ -59,9 +62,28 @@ test('alta de prospecto con campos obligatorios', async ({ page }) => {
   // Origen (lookup obligatorio)
   await pickFirstLookup(page, page.getByLabel(/^Origen/).first());
 
+  // Localidad (lookup) y datos de contacto obligatorios
+  const loc = page.locator('[data-id="aw_localidad.fieldControl-LookupResultsDropdown_aw_localidad_textInputBox_with_filter_new"]');
+  await loc.scrollIntoViewIfNeeded();
+  await loc.click();
+  await page.keyboard.press('Control+A');
+  await page.keyboard.type('San', { delay: 100 });
+  await page.waitForTimeout(3000);
+  await page.getByText('SAN ADOLFO', { exact: true }).first().click();
+  await page.waitForTimeout(1000);
+  await expect(page.getByText('SAN ADOLFO', { exact: true }).first()).toBeVisible();
+  await page.screenshot({ path: 'test-results/localidad.png' });
+  await page.getByLabel(/^Teléfono 1/).first().fill('1155550000');
+  await page.getByLabel(/^Email 1/).first().fill('qa.prueba@example.com');
+
+  const modal = page.locator('[id^="modalDialogRoot"]').first();
+  if (await modal.isVisible()) {
+    await page.screenshot({ path: 'test-results/modal.png' });
+    throw new Error('Diálogo bloqueante: ' + (await modal.innerText()).replace(/\s+/g, ' '));
+  }
   await page.locator('[data-id$="Mscrm.Form.lead.Save"], [aria-label="Guardar"]').or(page.getByText('Guardar', { exact: true })).first().click();
   await page.waitForTimeout(6000);
-  const notif = page.getByText(/Tiene \d+ notificaciones/);
+  const notif = page.getByText(/Tiene \d+ notificaciones/).first();
   if (await notif.isVisible()) {
     await notif.click();
     await page.waitForTimeout(1500);
