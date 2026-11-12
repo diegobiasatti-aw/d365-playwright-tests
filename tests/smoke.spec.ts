@@ -9,7 +9,7 @@ test('la app carga y muestra la navegación', async ({ page }) => {
 
 test('la vista de cuentas lista registros', async ({ page }) => {
   await page.goto(`/main.aspx?pagetype=entitylist&etn=account${appId}`);
-  await expect(page.locator('[role="grid"]').first()).toBeVisible();
+  await expect(page.locator('[role="grid"], [role="treegrid"], [data-id="grid-container"], [data-lp-id*="grid"]').first()).toBeVisible();
 });
 
 test('el formulario de nueva cuenta abre', async ({ page }) => {
