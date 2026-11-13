@@ -5,7 +5,8 @@ Pruebas para Dynamics 365 (usar solo el sandbox/UAT).
 ## Tests disponibles
 | Test | Qué hace |
 |------|----------|
-| `tests/prospecto.spec.ts` | Alta de un Prospecto (Persona Humana) con todos los campos obligatorios, incluida la consulta a Nosis. |
+| `tests/prospecto.spec.ts` | Alta de un Prospecto (Persona Humana) por la página de D365, ingresando los campos obligatorios, incluida la consulta a Nosis. |
+| `tests/altaprospecto.api.spec.ts` | Alta de prospecto por API (`altaprospecto`): 2 casos, sin clave devuelve 401 y con body válido devuelve 200. |
 
 ## Uso local
 1. Instalar Node 20+ y correr `npm install` y `npx playwright install chromium`.
