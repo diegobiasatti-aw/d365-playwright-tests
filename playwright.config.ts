@@ -20,8 +20,10 @@ export default defineConfig({
     {
       name: 'smoke',
       testMatch: /.*\.spec\.ts/,
+      testIgnore: /.*\.api\.spec\.ts/,
       dependencies: ['setup'],
       use: { storageState: STORAGE_STATE },
     },
+    { name: 'api', testMatch: /.*\.api\.spec\.ts/, use: { baseURL: undefined } },
   ],
 });
