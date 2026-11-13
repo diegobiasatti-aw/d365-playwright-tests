@@ -1,4 +1,4 @@
-name: D365 smoke tests
+name: D365 tests
 
 on:
   workflow_dispatch:

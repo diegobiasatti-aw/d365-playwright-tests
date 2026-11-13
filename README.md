@@ -1,4 +1,4 @@
-# D365 Playwright tests
+﻿# D365 Playwright tests
 
 Pruebas para Dynamics 365 (usar solo el sandbox/UAT).
 
@@ -6,7 +6,6 @@ Pruebas para Dynamics 365 (usar solo el sandbox/UAT).
 | Test | Qué hace |
 |------|----------|
 | `tests/prospecto.spec.ts` | Alta de un Prospecto (Persona Humana) con todos los campos obligatorios, incluida la consulta a Nosis. |
-| `tests/smoke.spec.ts` | Pruebas de humo genéricas (navegación y grillas). |
 
 ## Uso local
 1. Instalar Node 20+ y correr `npm install` y `npx playwright install chromium`.

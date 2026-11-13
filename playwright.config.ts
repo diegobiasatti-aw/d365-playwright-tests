@@ -18,7 +18,7 @@ export default defineConfig({
   projects: [
     { name: 'setup', testMatch: /auth\.setup\.ts/ },
     {
-      name: 'smoke',
+      name: 'ui',
       testMatch: /.*\.spec\.ts/,
       testIgnore: /.*\.api\.spec\.ts/,
       dependencies: ['setup'],
