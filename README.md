@@ -25,6 +25,20 @@ Pruebas para Dynamics 365 (usar solo el sandbox/UAT).
 - Localidad, teléfono (10 dígitos) y email se completan con datos de prueba.
 - Las capturas en `test-results/` pueden contener datos reales: no se suben (están en `.gitignore`).
 
+## Alta de prospecto por API
+Endpoint: `POST /crm/altaprospecto` (URL en `API_ALTA_PROSPECTO_URL`, clave en `API_SUBSCRIPTION_KEY`, enviada en el header `Ocp-Apim-Subscription-Key`). Test: `tests/altaprospecto.api.spec.ts`.
+
+Correr: `npx.cmd playwright test --project=api` (no necesita login de D365).
+
+Cómo decide la API según el número de documento:
+1. Si el DNI existe como **contacto**, actualiza el contacto.
+2. Si no, verifica si existe como **prospecto**:
+   - si existe, actualiza el prospecto;
+   - si no existe, **crea** el prospecto.
+
+Respuestas observadas: `200` con "Creación Exitosa de Prospecto" (alta) o "Prospecto actualizado correctamente" (actualización). Sin clave devuelve `401`.
+Para probar la creación, el DNI no debe existir antes como contacto ni prospecto en QA (hay que eliminarlo).
+
 ## CI (GitHub Actions)
 Secrets del repo: `D365_URL`, `D365_APP_ID` y `D365_STORAGE_STATE` (contenido JSON de `.auth/state.json`).
 Para el prospecto en CI agregar también `D365_TEST_DNI` y pasarlo como variable de entorno en el workflow.
