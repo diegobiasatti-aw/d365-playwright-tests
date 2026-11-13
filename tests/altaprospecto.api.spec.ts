@@ -10,7 +10,7 @@ const body = {
   numeroDocumento: Number(process.env.D365_TEST_DNI),
   tipoTelefono: 121020001,
   telefono: 111111110,
-  email: 'qa.prueba@example.com',
+  email: 'dgotuzzo@gmail.com',
   localidad: 416,
   origen: 1018,
   genero: 121020001,
